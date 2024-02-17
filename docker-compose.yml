@@ -1,0 +1,43 @@
+version: "3.8"
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: mobifi_frontend
+    ports:
+      - '5000:5000'
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: mobifi_backend
+    ports:
+      - '3000:3000'
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    networks:
+      - sail
+  db:
+    image: postgres
+    container_name: mobifi_db
+    volumes:
+      - ./pgadmin/data:/var/lib/pgadmin/data
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: hydroiq
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: password
+      PGPASSWORD: password
+    networks:
+      - sail
+
+networks:
+  sail:
+    driver: bridge
