@@ -2,7 +2,7 @@
 
 import useAxios from "@/hooks/useAxios";
 import { EventCard } from "@/components/events/EventCard";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { EventGrid } from "@/components/events/EventGrid";
 import { useEventsStore } from "@/store/events.store";
 

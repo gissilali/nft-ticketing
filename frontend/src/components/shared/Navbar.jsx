@@ -7,9 +7,7 @@ import { UserProfileButton } from "@/components/shared/UserProfileButton";
 import { useWeb3 } from "@/hooks/useWeb3";
 import { useEffect } from "react";
 import { Logo } from "@/components/shared/Logo";
-import { Button } from "@/components/ui/button";
 import { AddEventButton } from "@/components/events/AddEventButton";
-import useAxios from "@/hooks/useAxios";
 import axios from "axios";
 
 export const Navbar = () => {
