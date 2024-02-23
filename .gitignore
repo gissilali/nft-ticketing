@@ -1,3 +1,4 @@
 ./pgadmin
 .idea/
 node_modules
+.vscode/
