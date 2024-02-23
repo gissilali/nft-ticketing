@@ -8,9 +8,11 @@ import {
   Body,
   HttpException,
   HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { AuthService } from './auth.service';
+import { AuthGuard } from './auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -53,5 +55,18 @@ export class AuthController {
     return response.json({
       message: 'OK',
     });
+  }
+
+  @Post('/logout')
+  async logout(@Res() response: Response) {
+    response.clearCookie('accessToken', {
+      maxAge: 24 * 60 * 60 * 1000,
+      httpOnly: true,
+      secure: true,
+      sameSite: 'lax',
+      domain: 'localhost',
+    });
+
+    return response.end();
   }
 }

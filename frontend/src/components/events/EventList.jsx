@@ -16,11 +16,12 @@ export const EventList = () => {
   }, []);
 
   const fetchEvents = async () => {
-    const response = await axios.get("/events");
-
+    try {
+      const response = await axios.get("/events");
       updateEvents(response.data);
-
-    console.log({ events });
+    } catch (e) {
+      console.log({ e });
+    }
   };
 
   return (
@@ -34,7 +35,7 @@ export const EventList = () => {
       {events.length > 0 ? (
         <EventGrid>
           {events.map((event) => (
-            <EventCard className={'col-span-1'} event={event} key={event.id} />
+            <EventCard className={"col-span-1"} event={event} key={event.id} />
           ))}
         </EventGrid>
       ) : (

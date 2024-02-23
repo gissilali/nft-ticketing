@@ -5,7 +5,6 @@ import { CreateEventDto } from './event.dto';
 import { WalletAddress } from '../utils';
 
 @Controller()
-@UseGuards(AuthGuard)
 export class EventsController {
   constructor(private readonly eventsService: EventsService) {}
 
@@ -15,6 +14,7 @@ export class EventsController {
   }
 
   @Post('/events')
+  @UseGuards(AuthGuard)
   create(
     @Body() createEventDto: CreateEventDto,
     @WalletAddress() walletAddress: string,
