@@ -1,11 +1,27 @@
-import { Controller, Get } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '../auth/auth.guard';
+import { EventsService } from './events.service';
+import { CreateEventDto } from './event.dto';
+import { WalletAddress } from '../utils';
 
 @Controller()
+@UseGuards(AuthGuard)
 export class EventsController {
-  constructor() {}
+  constructor(private readonly eventsService: EventsService) {}
 
   @Get('/events')
-  index(): string {
-    return 'events';
+  async index() {
+    return await this.eventsService.findAll();
+  }
+
+  @Post('/events')
+  create(
+    @Body() createEventDto: CreateEventDto,
+    @WalletAddress() walletAddress: string,
+  ) {
+    return this.eventsService.create({
+      ...createEventDto,
+      organizer: walletAddress,
+    });
   }
 }
