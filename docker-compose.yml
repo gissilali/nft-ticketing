@@ -31,12 +31,26 @@ services:
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_DB: hydroiq
+      POSTGRES_DB: mobifi_ticketing
       POSTGRES_USER: root
       POSTGRES_PASSWORD: password
       PGPASSWORD: password
     networks:
       - sail
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: mobifi_pgAdmin
+    ports:
+      - "5050:80"
+    depends_on:
+      - db
+    environment:
+      PGADMIN_DEFAULT_EMAIL: hanieasemi76@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: password
+    networks:
+      - sail
+    logging:
+      driver: none
 
 networks:
   sail:
