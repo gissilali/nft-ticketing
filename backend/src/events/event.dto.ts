@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber, IsOptional } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsOptional, Min } from 'class-validator';
 
 export class CreateEventDto {
   id: number;
@@ -10,6 +10,9 @@ export class CreateEventDto {
   description: string;
 
   organizer: string;
+
+  @IsOptional()
+  lockAddress?: string | null;
 
   @IsNotEmpty({
     message: 'Venue is required',
@@ -36,4 +39,7 @@ export class CreateEventDto {
 
   @IsNotEmpty()
   startDate: string;
+
+  @IsNotEmpty()
+  endDate: string;
 }

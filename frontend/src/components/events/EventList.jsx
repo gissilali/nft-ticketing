@@ -3,7 +3,7 @@
 import useAxios from "@/hooks/useAxios";
 import { EventCard } from "@/components/events/EventCard";
 import { useEffect } from "react";
-import { EventGrid } from "@/components/events/EventGrid";
+import { EventGrid } from "@/components/shared/EventGrid";
 import { useEventsStore } from "@/store/events.store";
 
 export const EventList = () => {
@@ -25,13 +25,7 @@ export const EventList = () => {
   };
 
   return (
-    <div className={"pt-8"}>
-      <h1
-        className={"font-semibold mt-3 text-3xl  tracking-tight text-slate-900"}
-      >
-        All Events
-      </h1>
-      <hr className={"my-4"} />
+    <div>
       {events.length > 0 ? (
         <EventGrid>
           {events.map((event) => (

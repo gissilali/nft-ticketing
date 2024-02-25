@@ -1,7 +1,14 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { TicketEntity } from '../ticketing/ticket.entity';
 
 @Entity('events')
-export class Event extends BaseEntity {
+export class EventEntity extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -10,6 +17,9 @@ export class Event extends BaseEntity {
 
   @Column()
   organizer: string;
+
+  @Column({ nullable: true })
+  lockAddress: string;
 
   @Column()
   description: string;
@@ -29,4 +39,7 @@ export class Event extends BaseEntity {
     onUpdate: 'CURRENT_TIMESTAMP',
   })
   updatedAt: Date;
+
+  @OneToMany(() => TicketEntity, (ticket) => ticket.event)
+  tickets: EventEntity[];
 }

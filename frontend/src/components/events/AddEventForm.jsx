@@ -3,7 +3,6 @@
 import { useForm } from "react-hook-form";
 import {
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -16,23 +15,37 @@ import { Textarea } from "@/components/ui/textarea";
 import { DatePicker } from "@/components/shared/DatePicker";
 import useAxios from "@/hooks/useAxios";
 import { useEventsStore } from "@/store/events.store";
+import { useState } from "react";
+import { LoadingSpinner } from "@/components/shared/LoadingSpinner";
+import { Checkbox } from "@/components/ui/checkbox";
 
 export const AddEventForm = ({ onSuccessfulSubmission }) => {
   const form = useForm({
     defaultValues: {
+      title: "",
+      description: "",
+      venue: "",
       ticketPrice: 0,
       maxTickets: 0,
-      startDate: null,
+      eventDuration: null,
+      isUnlimited: true,
     },
   });
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const addEvent = useEventsStore((state) => state.addEvent);
+  const isUnlimited = form.watch("isUnlimited");
 
   const { axios } = useAxios();
 
   function onSubmit(values) {
+    console.log({ values });
+    setIsSubmitting(true);
     values.ticketPrice = Number(values.ticketPrice);
-    values.maxTickets = Number(values.maxTickets);
+    values.maxTickets = isUnlimited ? -1 : Number(values.maxTickets);
+    values.startDate = values.eventDuration?.from;
+    values.endDate = values.eventDuration?.to;
     axios
       .post("/events", values)
       .then(({ data }) => {
@@ -48,6 +61,9 @@ export const AddEventForm = ({ onSuccessfulSubmission }) => {
             });
           }
         }
+      })
+      .finally(() => {
+        setIsSubmitting(false);
       });
   }
 
@@ -96,51 +112,72 @@ export const AddEventForm = ({ onSuccessfulSubmission }) => {
             </FormItem>
           )}
         />
-        <div className={"flex space-x-4"}>
-          <FormField
-            control={form.control}
-            name="ticketPrice"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Ticket Price</FormLabel>
-                <FormControl>
-                  <div className={"flex"}>
-                    <Input
-                      className={"rounded-e-none"}
-                      type={"number"}
-                      {...field}
-                    />
-                    <span className="flex items-center justify-center bg-slate-100 border rounded-s-none rounded-lg text-xs  px-2">
-                      ETH
-                    </span>
-                  </div>
-                </FormControl>
-                <FormMessage className="text-xs" />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="maxTickets"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Max Tickets</FormLabel>
-                <FormControl>
-                  <Input type={"number"} {...field} />
-                </FormControl>
-                <FormMessage className="text-xs" />
-              </FormItem>
-            )}
-          />
-        </div>
         <FormField
           control={form.control}
-          name="startDate"
+          name="ticketPrice"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Ticket Price</FormLabel>
+              <FormControl>
+                <div className={"flex"}>
+                  <Input
+                    className={"rounded-e-none"}
+                    type={"number"}
+                    {...field}
+                  />
+                  <span className="flex items-center justify-center bg-slate-100 border rounded-s-none rounded-lg text-xs  px-2">
+                    ETH
+                  </span>
+                </div>
+              </FormControl>
+              <FormMessage className="text-xs" />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="maxTickets"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Max Tickets</FormLabel>
+              <FormControl>
+                <Input disabled={isUnlimited} type={"number"} {...field} />
+              </FormControl>
+              <FormMessage className="text-xs" />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="isUnlimited"
+          render={({ field }) => (
+            <FormItem>
+              <FormControl>
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                    id="isUnlimited"
+                  />
+                  <label
+                    htmlFor="isUnlimited"
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  >
+                    Unlimited
+                  </label>
+                </div>
+              </FormControl>
+              <FormMessage className="text-xs" />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="eventDuration"
           render={({ field }) => {
-            console.log({ field }, "I put a spell on you");
             return (
               <FormItem>
-                <FormLabel>Event Start Date</FormLabel>
+                <FormLabel>Event Duration</FormLabel>
                 <FormControl>
                   <div>
                     <DatePicker date={field.value} onSelect={field.onChange} />
@@ -151,19 +188,17 @@ export const AddEventForm = ({ onSuccessfulSubmission }) => {
             );
           }}
         />
-        <Button type="submit">
-          Submit {form.formState.isSubmitting.toString()}
+        <Button disabled={isSubmitting} type="submit">
+          {isSubmitting ? (
+            <>
+              <LoadingSpinner />
+              <span>Submitting...</span>
+            </>
+          ) : (
+            <span>Submit</span>
+          )}
         </Button>
       </form>
-      {form.formState.isSubmitting && (
-        <div
-          className={
-            "absolute -top-2 rounded-lg flex justify-center items-center right-0 left-0 h-full w-full bg-slate-300 opacity-45"
-          }
-        >
-          <h2 className="">Submitting...</h2>
-        </div>
-      )}
     </Form>
   );
 };

@@ -14,7 +14,6 @@ import {
 } from "@/components/ui/popover";
 
 export function DatePicker({ onSelect, date }) {
-
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -26,12 +25,25 @@ export function DatePicker({ onSelect, date }) {
           )}
         >
           <CalendarIcon className="mr-2 h-4 w-4" />
-          {date ? format(date, "PPP") : <span>Pick a date</span>}
+          {date?.from ? (
+            date.to ? (
+              <>
+                {format(date.from, "LLL dd, y")} -{" "}
+                {format(date.to, "LLL dd, y")}
+              </>
+            ) : (
+              format(date.from, "LLL dd, y")
+            )
+          ) : (
+            <span>Pick a date</span>
+          )}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0">
         <Calendar
-          mode="single"
+          fromDate={new Date()}
+          mode="range"
+          numberOfMonths={2}
           selected={date}
           onSelect={onSelect}
           initialFocus
