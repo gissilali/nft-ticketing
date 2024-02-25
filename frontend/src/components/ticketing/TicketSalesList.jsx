@@ -5,7 +5,7 @@ import { EventGrid } from "@/components/shared/EventGrid";
 import { TicketCard } from "@/components/ticketing/TicketCard";
 import useAuthStore from "@/store/auth.store";
 
-export const TicketList = () => {
+export const TicketSalesList = () => {
   const [tickets, setTickets] = useState([]);
   const { axios } = useAxios();
   const { userAccount } = useAuthStore();
@@ -18,7 +18,7 @@ export const TicketList = () => {
 
   const fetchTickets = () => {
     axios
-      .get(`/orders/${userAccount}`)
+      .get(`/orders`)
       .then(({ data }) => {
         setTickets(data);
       })

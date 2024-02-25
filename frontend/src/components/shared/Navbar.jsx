@@ -9,10 +9,12 @@ import { useEffect } from "react";
 import { Logo } from "@/components/shared/Logo";
 import { AddEventButton } from "@/components/events/AddEventButton";
 import axios from "axios";
+import { usePathname } from "next/navigation";
 
 export const Navbar = () => {
   const { updateUserDetails, isConnected, ethBalance, userAccount } =
     useAuthStore();
+  const pathname = usePathname();
 
   const { checkConnection } = useWeb3();
 
@@ -53,10 +55,9 @@ export const Navbar = () => {
   }
 
   const navigation = [
-    { name: "All Events", href: "#", current: true },
-    { name: "My Tickets", href: "#", current: false },
-    { name: "My Sales", href: "#", current: false },
-    // { name: 'Calendar', href: '#', current: false },
+    { name: "All Events", href: "/" },
+    { name: "My Tickets", href: "/tickets" },
+    { name: "My Sales", href: "/sales" },
   ];
 
   return (
@@ -73,21 +74,25 @@ export const Navbar = () => {
                   className="hidden lg:flex lg:space-x-8 lg:py-2"
                   aria-label="Global"
                 >
-                  {navigation.map((item) => (
-                    <a
-                      key={item.name}
-                      href={item.href}
-                      className={classNames(
-                        item.current
-                          ? "bg-gray-100 text-gray-900"
-                          : "text-gray-900 hover:bg-gray-50 hover:text-gray-900",
-                        "inline-flex items-center rounded-md py-2 px-3 text-sm font-medium",
-                      )}
-                      aria-current={item.current ? "page" : undefined}
-                    >
-                      {item.name}
-                    </a>
-                  ))}
+                  {navigation.map((item) => {
+                    const isCurrent = pathname === item.href;
+                    console.log({ location: pathname });
+                    return (
+                      <Link
+                        key={item.name}
+                        href={item.href}
+                        className={classNames(
+                          isCurrent
+                            ? "bg-gray-200 text-gray-900"
+                            : "text-gray-900 hover:bg-gray-50 hover:text-gray-900",
+                          "inline-flex items-center rounded-md py-2 px-3 text-sm font-medium",
+                        )}
+                        aria-current={item.current ? "page" : undefined}
+                      >
+                        {item.name}
+                      </Link>
+                    );
+                  })}
                 </nav>
                 <AddEventButton />
                 <UserProfileButton

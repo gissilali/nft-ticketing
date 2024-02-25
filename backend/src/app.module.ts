@@ -10,15 +10,20 @@ import { Web3Module } from 'nest-web3';
 import { AuthService } from './auth/auth.service';
 import { AuthMiddleware } from './auth/auth.middleware';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Event } from './events/event.entity';
+import { EventEntity } from './events/event.entity';
+import { TicketingModule } from './ticketing/ticketing.module';
+import { TicketEntity } from './ticketing/ticket.entity';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({
   imports: [
     EventsModule,
+    TicketingModule,
+    AuthModule,
+    EventEmitterModule.forRoot(),
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    AuthModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
@@ -41,7 +46,7 @@ import { Event } from './events/event.entity';
         username: configService.get('DB_USERNAME'),
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_DATABASE'),
-        entities: [Event],
+        entities: [EventEntity, TicketEntity],
         synchronize: true,
         migrations: ['dist/migrations/*.js'],
       }),

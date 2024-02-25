@@ -26,7 +26,6 @@ export const LoginButton = ({ onSuccessfulLogin: handleSuccessfulLogin }) => {
   };
 
   const fetchMessageToBeSigned = async (address) => {
-    console.log(address, "ADDY ticha");
     const response = await axios.get(
       `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/message/${address}`,
     );

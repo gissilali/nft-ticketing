@@ -61,6 +61,6 @@ export const useWeb3 = () => {
   return {
     requestAccount,
     signMessage,
-    checkConnection
+    checkConnection,
   };
 };

@@ -7,18 +7,23 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import {Button} from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
+import { ethers } from "ethers";
 
 export const UserProfileButton = ({ ethBalance, userAccount }) => {
+  const accountBalance = Number(
+    ethers.formatUnits(ethBalance.toString(), "ether"),
+  );
+
   return (
     <TooltipProvider>
       <Tooltip>
-        <TooltipTrigger  asChild>
+        <TooltipTrigger asChild>
           <Button variant={"outline"} className={"space-x-4"}>
             <span>
               <WalletMini />
             </span>
-            <span>{ethBalance.toString()} ETH</span>
+            <span>{accountBalance.toPrecision(4)} ETH</span>
             <span className={"text-xl font-light text-slate-400"}>|</span>
             <span className={"truncate w-16"}>{userAccount}</span>
           </Button>
