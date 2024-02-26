@@ -26,6 +26,7 @@ export class CreateEventDto {
       message: 'Max tickets should be a number',
     },
   )
+  @Min(10)
   maxTickets?: number | null;
 
   @IsNotEmpty()

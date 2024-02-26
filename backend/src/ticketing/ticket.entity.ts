@@ -44,11 +44,6 @@ export class TicketEntity extends BaseEntity {
   @Column()
   transactionHash: string;
 
-  @Column({
-    type: 'jsonb',
-  })
-  transactionDetails: TransactionDetails;
-
   @Column()
   attendeeAddress: string;
 

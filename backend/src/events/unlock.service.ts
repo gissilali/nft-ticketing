@@ -20,7 +20,7 @@ export class UnlockService {
 
     const signer = wallet.connect(provider);
 
-    const unlockAddress = '0x36b34e10295cCE69B652eEB5a8046041074515Da';
+    const unlockAddress = this.config.get('UNLOCK_PROTOCOL_SEPOLIA_ADDRESS');
 
     const unlockContract = new ethers.Contract(
       unlockAddress,
@@ -66,8 +66,6 @@ export class UnlockService {
 
     const amount = await publicLockContract.keyPrice();
 
-    console.log({ amount });
-
     const purchaseParams = [
       [amount],
       [signer.address],
@@ -77,8 +75,8 @@ export class UnlockService {
     ];
 
     const options = {
-      value: amount,
-      gasLimit: 590900,
+      amount,
+      gasLimit: 300000,
     };
 
     const transaction = await publicLockContract.purchase(

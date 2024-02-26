@@ -8,11 +8,9 @@ import {
   Body,
   HttpException,
   HttpStatus,
-  UseGuards,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { AuthService } from './auth.service';
-import { AuthGuard } from './auth.guard';
 
 @Controller('auth')
 export class AuthController {

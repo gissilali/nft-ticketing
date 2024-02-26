@@ -7,6 +7,7 @@ import { UnlockService } from '../events/unlock.service';
 import { ethers } from 'ethers';
 import { FindManyOptions } from 'typeorm/find-options/FindManyOptions';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
+import { CreateTicketDto } from './ticket.dto';
 
 @Injectable()
 export class TicketingService {
@@ -18,26 +19,21 @@ export class TicketingService {
     private readonly unlockService: UnlockService,
   ) {}
 
-  async create(eventId: string) {
+  async create(eventId: number, ticket: CreateTicketDto) {
     const event = await this.eventsRepository.findOne({
       where: {
-        id: Number(eventId),
+        id: eventId,
       },
     });
 
-    console.log({ event });
-
-    const receipt = await this.unlockService.purchaseKey(event.lockAddress);
-
-    console.log({ receipt });
+    // const receipt = await this.unlockService.purchaseKey(event.lockAddress);
 
     return await this.ticketsRepository.save({
       eventId: event.id,
-      attendeeAddress: receipt.details.from,
-      ticketPrice: ethers.utils.formatEther(receipt.amount).toString(),
-      transactionHash: receipt.details.transactionHash,
+      attendeeAddress: ticket.attendeeAddress,
+      ticketPrice: ticket.ticketPrice,
+      transactionHash: ticket.transactionHash,
       organizer: event.organizer,
-      transactionDetails: receipt.details as TransactionDetails,
     });
   }
 

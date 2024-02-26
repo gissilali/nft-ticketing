@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Get,
   HttpException,
@@ -11,6 +12,7 @@ import { TicketingService } from './ticketing.service';
 import { AuthGuard } from '../auth/auth.guard';
 import { WalletAddress } from '../utils';
 import { EventEmitter2 as EventEmitter } from '@nestjs/event-emitter';
+import { CreateTicketDto } from './ticket.dto';
 
 @Controller('orders')
 export class TicketingController {
@@ -76,18 +78,24 @@ export class TicketingController {
 
   @Post('/:eventId/tickets')
   @UseGuards(AuthGuard)
-  async handleTicketPurchase(@Param('eventId') eventId: string) {
+  async handleTicketPurchase(
+    @Param('eventId') eventId: string,
+    @Body() createTicketDto: CreateTicketDto,
+  ) {
     try {
-      const ticket = await this.ticketingService.create(eventId);
+      const ticket = await this.ticketingService.create(
+        Number(eventId),
+        createTicketDto,
+      );
       this.eventEmitter.emit('ticket.purchased', ticket);
       return ticket;
     } catch (e: any) {
       console.log(e);
-      console.log(e.message);
       throw new HttpException(
         {
           status: HttpStatus.INTERNAL_SERVER_ERROR,
           error: 'Failed to complete transaction',
+          debug: e.message,
         },
         HttpStatus.INTERNAL_SERVER_ERROR,
         {

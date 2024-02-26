@@ -28,7 +28,7 @@ export const AddEventForm = ({ onSuccessfulSubmission }) => {
       ticketPrice: 0,
       maxTickets: 0,
       eventDuration: null,
-      isUnlimited: true,
+      isUnlimited: false,
     },
   });
 

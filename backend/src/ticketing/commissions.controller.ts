@@ -14,17 +14,22 @@ export class CommissionsController {
   ) {}
   @OnEvent('ticket.purchased')
   async deductCommission(ticket: TicketEntity) {
-    const commissionAmount = (Number(ticket.ticketPrice) * 5) / 100;
-    const transactionResponse = await this.unlockService.sendEth(
-      commissionAmount.toString(),
-      this.config.get('MOBIFI_WALLET_ADDRESS'),
-    );
+    const commissionAmount =
+      Number(ticket.ticketPrice) *
+      (Number(this.config.get('COMMISSION_PERCENTAGE')) / 100);
 
-    await this.ticketingService.update(ticket.id, {
-      commissionDeducted: transactionResponse.amount,
-      commissionTransactionHash: transactionResponse.details.hash,
-    });
+    if (commissionAmount) {
+      const transactionResponse = await this.unlockService.sendEth(
+        commissionAmount.toString(),
+        this.config.get('MOBIFI_WALLET_ADDRESS'),
+      );
 
-    console.log({ transactionResponse });
+      await this.ticketingService.update(ticket.id, {
+        commissionDeducted: transactionResponse.amount,
+        commissionTransactionHash: transactionResponse.details.hash,
+      });
+
+      console.log({ transactionResponse });
+    }
   }
 }

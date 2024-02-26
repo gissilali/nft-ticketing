@@ -19,7 +19,6 @@ export const Navbar = () => {
   const { checkConnection } = useWeb3();
 
   useEffect(() => {
-    console.log("Hey");
     (async () => {
       const isConnected = await checkConnection();
       if (isConnected === false) {

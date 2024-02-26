@@ -22,11 +22,13 @@ import { ContractDetailsCard } from "@/components/events/ContractDetailsCard";
 import useAxios from "@/hooks/useAxios";
 import { LoadingSpinner } from "@/components/shared/LoadingSpinner";
 import { useRouter } from "next/navigation";
+import { useWeb3 } from "@/hooks/useWeb3";
 
 export const EventCard = ({ event }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [contract, setContractDetails] = useState(null);
   const [isProcessingTicket, setIsProcessingTicket] = useState(false);
+  const { purchaseLock } = useWeb3();
 
   const { axios } = useAxios();
   const router = useRouter();
@@ -45,10 +47,16 @@ export const EventCard = ({ event }) => {
       });
   };
 
-  const attemptTicketPurchase = () => {
+  const attemptTicketPurchase = async () => {
     setIsProcessingTicket(true);
+    const { value, error } = await purchaseLock(event.lockAddress);
     axios
-      .post(`/orders/${event.id}/tickets`)
+      .post(`/orders/${event.id}/tickets`, {
+        transactionHash: value.receipt.hash,
+        ticketPrice: value.amount,
+        attendeeAddress: value.receipt.from,
+        transactionDetails: value.receipt,
+      })
       .then(({ data }) => {
         console.log(data);
         router.push("/tickets");
@@ -72,7 +80,7 @@ export const EventCard = ({ event }) => {
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild onClick={() => setIsDialogOpen(!isDialogOpen)}>
             <Button className={"w-full"} variant={"outline"}>
-              Buy Ticket
+              {contract?.keyPrice === "0.0" ? "Get Free Ticket" : "Buy Ticket"}
             </Button>
           </DialogTrigger>
           <DialogContent>
@@ -100,7 +108,11 @@ export const EventCard = ({ event }) => {
                     <span>Processing Ticket...</span>
                   </>
                 ) : (
-                  <span>Pay with Crypto</span>
+                  <span>
+                    {contract?.keyPrice === "0.0"
+                      ? "Process Ticket"
+                      : "Pay with Crypto"}
+                  </span>
                 )}
               </Button>
             </DialogFooter>

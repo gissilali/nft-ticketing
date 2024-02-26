@@ -8,17 +8,17 @@ import useAuthStore from "@/store/auth.store";
 export const TicketList = () => {
   const [tickets, setTickets] = useState([]);
   const { axios } = useAxios();
-  const { userAccount } = useAuthStore();
+  const { account } = useAuthStore();
 
   useEffect(() => {
-    if (userAccount) {
+    if (account) {
       fetchTickets();
     }
-  }, [userAccount]);
+  }, [account]);
 
   const fetchTickets = () => {
     axios
-      .get(`/orders/${userAccount}`)
+      .get(`/orders/${account}`)
       .then(({ data }) => {
         setTickets(data);
       })

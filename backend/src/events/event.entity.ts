@@ -30,6 +30,9 @@ export class EventEntity extends BaseEntity {
   @Column({ type: 'timestamp', nullable: false })
   startDate: string;
 
+  @Column({ type: 'timestamp', nullable: true })
+  endDate: string;
+
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 
