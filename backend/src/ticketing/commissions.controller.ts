@@ -3,19 +3,21 @@ import { TicketEntity } from './ticket.entity';
 import { OnEvent } from '@nestjs/event-emitter';
 import { UnlockService } from '../events/unlock.service';
 import { TicketingService } from './ticketing.service';
+import { ConfigService } from '@nestjs/config';
 
 @Controller('commissions')
 export class CommissionsController {
   constructor(
     private readonly unlockService: UnlockService,
     private readonly ticketingService: TicketingService,
+    private readonly config: ConfigService,
   ) {}
   @OnEvent('ticket.purchased')
   async deductCommission(ticket: TicketEntity) {
     const commissionAmount = (Number(ticket.ticketPrice) * 5) / 100;
     const transactionResponse = await this.unlockService.sendEth(
       commissionAmount.toString(),
-      '0xadc384FE4fB34f1cbd1e37BF8476d0dA3572dd24',
+      this.config.get('MOBIFI_WALLET_ADDRESS'),
     );
 
     await this.ticketingService.update(ticket.id, {

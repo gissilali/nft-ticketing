@@ -3,21 +3,20 @@ import { ethers } from 'ethers';
 import { PublicLockV12, UnlockV12 } from '@unlock-protocol/contracts';
 import { CreateEventDto } from './event.dto';
 import moment from 'moment';
+import { ConfigService } from '@nestjs/config';
 
 const MAX_UINT = 4294967295; // 2**56 -1 throws an error, so I settled for 4 billion
 @Injectable()
 export class UnlockService {
+  constructor(private readonly config: ConfigService) {}
   private getProvider(): ethers.providers.JsonRpcProvider {
     return new ethers.providers.JsonRpcProvider(
-      `https://eth-sepolia.g.alchemy.com/v2/pf_y7LnQqs4GoA7ic32QAB-SFe9qMJ1Y`,
+      this.config.get('SEPOLIA_TESTNET_URL'),
     );
   }
   async createEventLock(event: CreateEventDto) {
     const provider = this.getProvider();
-    const wallet = new ethers.Wallet(
-      '96a6e7a5444a069407a68e03c0d9b0177ae6f5b1ddc0787d696e7ba6d5b52788',
-      provider,
-    );
+    const wallet = new ethers.Wallet(this.config.get('PRIVATE_KEY'), provider);
 
     const signer = wallet.connect(provider);
 
@@ -55,10 +54,7 @@ export class UnlockService {
 
   async purchaseKey(lockAddress: string) {
     const provider = this.getProvider();
-    const wallet = new ethers.Wallet(
-      '96a6e7a5444a069407a68e03c0d9b0177ae6f5b1ddc0787d696e7ba6d5b52788',
-      provider,
-    );
+    const wallet = new ethers.Wallet(this.config.get('PRIVATE_KEY'), provider);
 
     const signer = wallet.connect(provider);
     console.log({ lockAddress, signer });
@@ -106,10 +102,7 @@ export class UnlockService {
 
   async getLockByAddress(address: string) {
     const provider = this.getProvider();
-    const wallet = new ethers.Wallet(
-      '96a6e7a5444a069407a68e03c0d9b0177ae6f5b1ddc0787d696e7ba6d5b52788',
-      provider,
-    );
+    const wallet = new ethers.Wallet(this.config.get('PRIVATE_KEY'), provider);
 
     const signer = wallet.connect(provider);
     const contract = new ethers.Contract(address, PublicLockV12.abi, signer);
@@ -131,10 +124,7 @@ export class UnlockService {
 
   async sendEth(amountInEther: string, receiverAddress: string) {
     const provider = this.getProvider();
-    const wallet = new ethers.Wallet(
-      '96a6e7a5444a069407a68e03c0d9b0177ae6f5b1ddc0787d696e7ba6d5b52788',
-      provider,
-    );
+    const wallet = new ethers.Wallet(this.config.get('PRIVATE_KEY'), provider);
 
     const transactionResponse = await wallet.sendTransaction({
       to: receiverAddress,

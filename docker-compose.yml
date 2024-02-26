@@ -11,6 +11,8 @@ services:
     volumes:
       - ./frontend:/app
       - /app/node_modules
+    networks:
+      - sail
   backend:
     build:
       context: ./backend
