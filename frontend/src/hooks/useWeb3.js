@@ -20,7 +20,7 @@ const detectCurrentProvider = () => {
   return provider;
 };
 
-const MAX_UINT = 4294967295; // 2**56 -1 throws an error, so I settled for 4 billion
+export const MAX_UINT = 4294967295; // 2**56 -1 throws an error, so I settled for 4 billion
 
 export const useWeb3 = () => {
   const currentProvider = detectCurrentProvider();
@@ -174,8 +174,16 @@ export const useWeb3 = () => {
 
     await publicLockContract.setReferrerFee(
       process.env.NEXT_PUBLIC_MOBIFI_WALLET_ADDRESS,
-      1000,
+      (Number(ethers.parseEther(event.ticketPrice.toString())) * 5) / 100,
     );
+
+    if (event.maxTickets >= event.maxTicketsPerAccount) {
+      await publicLockContract.updateLockConfig(
+        eventDurationInSeconds,
+        event.maxTickets >= 0 ? event.maxTickets : MAX_UINT,
+        Number(event.maxTicketsPerAccount),
+      );
+    }
 
     return lock;
   };

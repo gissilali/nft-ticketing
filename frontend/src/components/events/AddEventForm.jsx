@@ -8,6 +8,7 @@ import {
   FormLabel,
   FormMessage,
   Form,
+  FormDescription,
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,7 +19,7 @@ import { useEventsStore } from "@/store/events.store";
 import { useState } from "react";
 import { LoadingSpinner } from "@/components/shared/LoadingSpinner";
 import { Checkbox } from "@/components/ui/checkbox";
-import { useWeb3 } from "@/hooks/useWeb3";
+import { MAX_UINT, useWeb3 } from "@/hooks/useWeb3";
 import useAuthStore from "@/store/auth.store";
 
 export const AddEventForm = ({ onSuccessfulSubmission }) => {
@@ -28,9 +29,10 @@ export const AddEventForm = ({ onSuccessfulSubmission }) => {
       description: "",
       venue: "",
       ticketPrice: 0,
-      maxTickets: 0,
+      maxTickets: 1,
       eventDuration: null,
       isUnlimited: false,
+      maxTicketsPerAccount: 1,
     },
   });
 
@@ -38,6 +40,7 @@ export const AddEventForm = ({ onSuccessfulSubmission }) => {
 
   const addEvent = useEventsStore((state) => state.addEvent);
   const isUnlimited = form.watch("isUnlimited");
+  const maxTickets = form.watch("maxTickets");
 
   const { axios } = useAxios();
   const { createLock } = useWeb3();
@@ -75,6 +78,9 @@ export const AddEventForm = ({ onSuccessfulSubmission }) => {
 
   return (
     <Form {...form}>
+      <FormDescription>
+        {isSubmitting ? "Please do not close this dialog" : ""}
+      </FormDescription>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         <FormField
           control={form.control}
@@ -140,19 +146,39 @@ export const AddEventForm = ({ onSuccessfulSubmission }) => {
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="maxTickets"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Max Tickets</FormLabel>
-              <FormControl>
-                <Input disabled={isUnlimited} type={"number"} {...field} />
-              </FormControl>
-              <FormMessage className="text-xs" />
-            </FormItem>
-          )}
-        />
+        <div className="flex space-x-4">
+          <FormField
+            control={form.control}
+            name="maxTickets"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Max Tickets</FormLabel>
+                <FormControl>
+                  <Input disabled={isUnlimited} type={"number"} {...field} />
+                </FormControl>
+                <FormMessage className="text-xs" />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="maxTicketsPerAccount"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Max Tickets Per Account</FormLabel>
+                <FormControl>
+                  <Input
+                    max={isUnlimited ? MAX_UINT : maxTickets}
+                    disabled={isUnlimited}
+                    type={"number"}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage className="text-xs" />
+              </FormItem>
+            )}
+          />
+        </div>
         <FormField
           control={form.control}
           name="isUnlimited"
