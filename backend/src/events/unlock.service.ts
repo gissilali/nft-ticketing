@@ -15,7 +15,6 @@ export class UnlockService {
   async getLockByAddress(address: string) {
     const provider = this.getProvider();
     const wallet = new ethers.Wallet(this.config.get('PRIVATE_KEY'), provider);
-console.log({nyanye: this.config.get('PRIVATE_KEY')})
     const signer = wallet.connect(provider);
     const contract = new ethers.Contract(address, PublicLockV12.abi, signer);
     const keyPrice = ethers.utils.formatEther(await contract.keyPrice());
