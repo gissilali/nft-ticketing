@@ -4,14 +4,14 @@ import { persist } from "zustand/middleware";
 const useAuthStore = create(
   persist(
     (set, get) => ({
-      account: [],
-      userAccount: null,
+      account: null,
+      userAccounts: [],
       ethBalance: 0,
       isConnected: false,
-      updateUserDetails: ({ account, userAccount, ethBalance }) => {
+      updateUserDetails: ({ account, userAccounts, ethBalance }) => {
         return set({
           account,
-          userAccount,
+          userAccounts,
           ethBalance: ethBalance.toString(),
           isConnected: !!account,
         });

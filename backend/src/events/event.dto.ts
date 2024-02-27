@@ -11,8 +11,8 @@ export class CreateEventDto {
 
   organizer: string;
 
-  @IsOptional()
-  lockAddress?: string | null;
+  @IsNotEmpty()
+  lockAddress: string;
 
   @IsNotEmpty({
     message: 'Venue is required',

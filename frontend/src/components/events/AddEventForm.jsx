@@ -18,6 +18,8 @@ import { useEventsStore } from "@/store/events.store";
 import { useState } from "react";
 import { LoadingSpinner } from "@/components/shared/LoadingSpinner";
 import { Checkbox } from "@/components/ui/checkbox";
+import { useWeb3 } from "@/hooks/useWeb3";
+import useAuthStore from "@/store/auth.store";
 
 export const AddEventForm = ({ onSuccessfulSubmission }) => {
   const form = useForm({
@@ -38,14 +40,18 @@ export const AddEventForm = ({ onSuccessfulSubmission }) => {
   const isUnlimited = form.watch("isUnlimited");
 
   const { axios } = useAxios();
+  const { createLock } = useWeb3();
+  const { account } = useAuthStore();
 
-  function onSubmit(values) {
+  async function onSubmit(values) {
     console.log({ values });
     setIsSubmitting(true);
     values.ticketPrice = Number(values.ticketPrice);
     values.maxTickets = isUnlimited ? -1 : Number(values.maxTickets);
     values.startDate = values.eventDuration?.from;
     values.endDate = values.eventDuration?.to;
+    const lock = await createLock(values, account);
+    values.lockAddress = lock.address;
     axios
       .post("/events", values)
       .then(({ data }) => {

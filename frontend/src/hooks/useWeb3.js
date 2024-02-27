@@ -1,6 +1,7 @@
 import Web3 from "web3";
 import { ethers, BrowserProvider, Contract } from "ethers";
-import { PublicLockV12 } from "@unlock-protocol/contracts";
+import { PublicLockV12, UnlockV12 } from "@unlock-protocol/contracts";
+import moment from "moment";
 
 const detectCurrentProvider = () => {
   let provider;
@@ -19,6 +20,8 @@ const detectCurrentProvider = () => {
   return provider;
 };
 
+const MAX_UINT = 4294967295; // 2**56 -1 throws an error, so I settled for 4 billion
+
 export const useWeb3 = () => {
   const currentProvider = detectCurrentProvider();
 
@@ -28,15 +31,15 @@ export const useWeb3 = () => {
         await currentProvider.request({ method: "eth_requestAccounts" });
         const web3 = new Web3(currentProvider);
 
-        const userAccount = await web3.eth.getAccounts();
-        const account = userAccount[0];
+        const userAccounts = await web3.eth.getAccounts();
+        const account = userAccounts[0];
         let ethBalance = await web3.eth.getBalance(account);
 
         return {
           userData: {
             ethBalance,
             account,
-            userAccount,
+            userAccounts,
           },
           error: null,
         };
@@ -55,8 +58,13 @@ export const useWeb3 = () => {
     return await web3.eth.personal.sign(message, address, "");
   };
 
-  const checkConnection = async () => {
+  const checkConnection = async (handleAccountChanged) => {
     const accounts = await currentProvider.request({ method: "eth_accounts" });
+    currentProvider.on("accountsChanged", async (accounts) => {
+      const web3 = new Web3(currentProvider);
+      let ethBalance = await web3.eth.getBalance(accounts[0]);
+      handleAccountChanged({ accounts, ethBalance });
+    });
     return accounts.length > 0;
   };
 
@@ -113,10 +121,49 @@ export const useWeb3 = () => {
     }
   };
 
+  const createLock = async (event, organizerAddress) => {
+    const provider = new BrowserProvider(currentProvider);
+    const signer = await provider.getSigner();
+
+    const unlockAddress = process.env.NEXT_PUBLIC_UP_SEPOLIA_ADDRESS;
+
+    console.log({ unlockAddress });
+
+    const unlockContract = new Contract(unlockAddress, UnlockV12.abi, signer);
+    const lockInterface = new ethers.Interface(PublicLockV12.abi);
+
+    const startDate = moment(event.startDate).startOf("day");
+    const endDate = moment(event.endDate).endOf("day");
+    const eventDurationInSeconds = endDate.diff(startDate, "s");
+    const callData = lockInterface.encodeFunctionData(
+      "initialize(address,uint256,address,uint256,uint256,string)",
+      [
+        organizerAddress, // event organizer wallet address,
+        eventDurationInSeconds,
+        ethers.ZeroAddress,
+        ethers.parseEther(event.ticketPrice.toString()), //key price,
+        event.maxTickets >= 0 ? event.maxTickets : MAX_UINT, //max number of tickets
+        `${event.title} Contract`,
+      ],
+    );
+
+    console.log(unlockContract);
+
+    const transaction = await unlockContract.createUpgradeableLockAtVersion(
+      callData,
+      12,
+    );
+
+    const receipt = await transaction.wait();
+
+    return receipt.logs[0];
+  };
+
   return {
     requestAccount,
     signMessage,
     checkConnection,
     purchaseLock,
+    createLock,
   };
 };

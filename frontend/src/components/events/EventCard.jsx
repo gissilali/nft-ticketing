@@ -23,13 +23,13 @@ import useAxios from "@/hooks/useAxios";
 import { LoadingSpinner } from "@/components/shared/LoadingSpinner";
 import { useRouter } from "next/navigation";
 import { useWeb3 } from "@/hooks/useWeb3";
+import useAuthStore from "@/store/auth.store";
 
 export const EventCard = ({ event }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [contract, setContractDetails] = useState(null);
   const [isProcessingTicket, setIsProcessingTicket] = useState(false);
   const { purchaseLock } = useWeb3();
-
   const { axios } = useAxios();
   const router = useRouter();
 
@@ -55,7 +55,6 @@ export const EventCard = ({ event }) => {
         transactionHash: value.receipt.hash,
         ticketPrice: value.amount,
         attendeeAddress: value.receipt.from,
-        transactionDetails: value.receipt,
       })
       .then(({ data }) => {
         console.log(data);

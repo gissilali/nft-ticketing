@@ -12,7 +12,7 @@ import axios from "axios";
 import { usePathname } from "next/navigation";
 
 export const Navbar = () => {
-  const { updateUserDetails, isConnected, ethBalance, userAccount } =
+  const { updateUserDetails, isConnected, ethBalance, account } =
     useAuthStore();
   const pathname = usePathname();
 
@@ -20,7 +20,14 @@ export const Navbar = () => {
 
   useEffect(() => {
     (async () => {
-      const isConnected = await checkConnection();
+      const isConnected = await checkConnection(({ accounts, ethBalance }) => {
+        updateUserDetails({
+          account: accounts[0],
+          userAccounts: accounts,
+          ethBalance,
+          isConnected: true,
+        });
+      });
       if (isConnected === false) {
         logout();
       }
@@ -97,7 +104,7 @@ export const Navbar = () => {
                 <AddEventButton />
                 <UserProfileButton
                   ethBalance={ethBalance}
-                  userAccount={userAccount}
+                  userAccount={account}
                 />
               </div>
             ) : (

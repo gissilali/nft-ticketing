@@ -22,8 +22,8 @@ export class EventsService {
   }
 
   async create(event: CreateEventDto) {
-    const lock = await this.unlockService.createEventLock(event);
-    event.lockAddress = lock.address;
+    // const lock = await this.unlockService.createEventLock(event);
+    // event.lockAddress = lock.address;
     return this.eventsRepository.save(event);
   }
 }
