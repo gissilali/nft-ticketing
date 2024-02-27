@@ -22,19 +22,28 @@ const detectCurrentProvider = () => {
 
 export const MAX_UINT = 4294967295; // 2**56 -1 throws an error, so I settled for 4 billion
 
+// This custom hook provides access to the Web3 library and Ethereum accounts.
 export const useWeb3 = () => {
   const currentProvider = detectCurrentProvider();
 
+  // Request user account access.
   const requestAccount = async () => {
     try {
       if (currentProvider) {
+        // Request user permission to connect their Ethereum account.
         await currentProvider.request({ method: "eth_requestAccounts" });
+
+        // Initialize a new Web3 instance using the detected provider.
         const web3 = new Web3(currentProvider);
 
+        // Get the user's Ethereum accounts.
         const userAccounts = await web3.eth.getAccounts();
         const account = userAccounts[0];
+
+        // Get the user's Ethereum balance.
         let ethBalance = await web3.eth.getBalance(account);
 
+        // Return user data and any potential errors.
         return {
           userData: {
             ethBalance,
@@ -46,6 +55,7 @@ export const useWeb3 = () => {
       }
     } catch (err) {
       return {
+        // Return user data and any potential errors.
         userData: null,
         error: err,
       };
@@ -58,15 +68,23 @@ export const useWeb3 = () => {
     return await web3.eth.personal.sign(message, address, "");
   };
 
+  /**
+   * Checks the connection status and monitors account changes.
+   * @param {function} handleSuccessfulConnection - Callback function to handle successful connection.
+   * @param {function} handleFailedConnection - Callback function to handle failed connection.
+   * @returns {boolean} - Indicates whether there are connected accounts.
+   */
   const checkConnection = async (
     handleSuccessfulConnection,
     handleFailedConnection,
   ) => {
     const accounts = await currentProvider.request({ method: "eth_accounts" });
 
+    // Listen for changes in Ethereum accounts.
     currentProvider.on("accountsChanged", async (accounts) => {
       const web3 = new Web3(currentProvider);
       if (accounts.length > 0) {
+        // Get the balance of the selected account
         let ethBalance = await web3.eth.getBalance(accounts[0]);
         handleSuccessfulConnection({ accounts, ethBalance });
       } else {
@@ -93,27 +111,22 @@ export const useWeb3 = () => {
     let str = "signed";
     let encoder = new TextEncoder();
     let bytes = encoder.encode(str);
-    const referrerAddress = process.env.NEXT_PUBLIC_MOBIFI_WALLET_ADDRESS;
-    console.log({ referrerAddress });
+    const referrerAddress = process.env.NEXT_PUBLIC_MOBIFI_WALLET_ADDRESS; // referrer receives some proceeds off every ticket sale
     const purchaseParams = [
       [amount],
       [signer.address],
       [referrerAddress],
       [ethers.ZeroAddress],
-      [bytes],
+      [bytes], //here's where you put arbitrary data just make sure the length of this param should match the length of other params
     ];
 
     const options = {
       value: amount,
-      gasLimit: 900000,
+      gasLimit: 900000, //always set the gasLimit, it will throw an error otherwise
     };
 
+    //attempt to purchase a ticket
     try {
-      const referrerFees =
-        await publicLockContract.referrerFees(referrerAddress);
-
-      console.log({ referrerFees });
-
       const transaction = await publicLockContract.purchase(
         ...purchaseParams,
         options,
@@ -150,14 +163,16 @@ export const useWeb3 = () => {
     const startDate = moment(event.startDate).startOf("day");
     const endDate = moment(event.endDate).endOf("day");
     const eventDurationInSeconds = endDate.diff(startDate, "s");
+
+    // Encode the function data for lock initialization.
     const callData = lockInterface.encodeFunctionData(
       "initialize(address,uint256,address,uint256,uint256,string)",
       [
         organizerAddress, // event organizer wallet address,
         eventDurationInSeconds,
         ethers.ZeroAddress,
-        ethers.parseEther(event.ticketPrice.toString()), //key price,
-        event.maxTickets >= 0 ? event.maxTickets : MAX_UINT, //max number of tickets
+        ethers.parseEther(event.ticketPrice.toString()), // Convert ticket price to wei,
+        event.maxTickets > 0 ? event.maxTickets : MAX_UINT, // Set max number of tickets (or use MAX_UINT if unlimited)
         `${event.title} Contract`,
       ],
     );
@@ -177,12 +192,14 @@ export const useWeb3 = () => {
       signer,
     );
 
+    // Set the referrer fee for the lock. The fee is a flat rate, you can make this a percentage if you like.
     await publicLockContract.setReferrerFee(
       process.env.NEXT_PUBLIC_MOBIFI_WALLET_ADDRESS,
       1500,
     );
 
     if (event.maxTickets >= event.maxTicketsPerAccount) {
+      // Update lock configuration.
       await publicLockContract.updateLockConfig(
         eventDurationInSeconds,
         event.maxTickets >= 0 ? event.maxTickets : MAX_UINT,
