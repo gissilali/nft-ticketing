@@ -15,8 +15,13 @@ LogoIpsum uses [Next.js](https://nextjs.org/) for the frontend and [NestJS](http
 - Install MetaMask from [here](https://metamask.io/download/)
 - Install Docker and Docker Compose, from [here](https://docs.docker.com/engine/install/) and [here](https://docs.docker.com/compose/install/) respectively
 - Clone the repository `git clone https://github.com/gissilali/nft-ticketing.git`
-- Add the appropriate values for `SEPOLIA_TESTNET_URL` and `PRIVATE_KEY` environmental variables
-- `cd` into the project directory root and run `docker compose up --build` to run the application, this starts the development servers for both the frontend and backend services.
+- run `cd nft-ticketing && cp backend/env.example backend/.env && cp frontend/env.example frontend/.env.local`
+- Add the appropriate values for `SEPOLIA_TESTNET_URL` and `PRIVATE_KEY` to the `.env` file in the `/backend` directory
+- From the root directory of the project run `docker compose up --build`, this starts the development servers for both the frontend and backend services.
 - Go to http://localhost:5000/ to open the web application on the browser.
+
+## Troubleshooting
+- If the login button is unresponsive when clicked, please try reloading the page. This issue is caused by a bug in Next.js that occurs in development mode.
+- Make sure the `SEPOLIA_TESTNET_URL` and `PRIVATE_KEY` values are defined
 
 
