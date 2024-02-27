@@ -58,13 +58,22 @@ export const useWeb3 = () => {
     return await web3.eth.personal.sign(message, address, "");
   };
 
-  const checkConnection = async (handleAccountChanged) => {
+  const checkConnection = async (
+    handleSuccessfulConnection,
+    handleFailedConnection,
+  ) => {
     const accounts = await currentProvider.request({ method: "eth_accounts" });
+
     currentProvider.on("accountsChanged", async (accounts) => {
       const web3 = new Web3(currentProvider);
-      let ethBalance = await web3.eth.getBalance(accounts[0]);
-      handleAccountChanged({ accounts, ethBalance });
+      if (accounts.length > 0) {
+        let ethBalance = await web3.eth.getBalance(accounts[0]);
+        handleSuccessfulConnection({ accounts, ethBalance });
+      } else {
+        handleFailedConnection();
+      }
     });
+
     return accounts.length > 0;
   };
 

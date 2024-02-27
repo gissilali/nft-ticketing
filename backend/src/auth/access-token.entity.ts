@@ -6,11 +6,5 @@ export class AccessTokenEntity extends BaseEntity {
   id: number;
 
   @Column()
-  hashedAccessToken: string;
-
-  @Column({
-    type: 'timestamp',
-    nullable: false,
-  })
-  expiryDate: Date;
+  accessToken: string;
 }

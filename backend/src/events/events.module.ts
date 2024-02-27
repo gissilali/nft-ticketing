@@ -7,10 +7,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { EventEntity } from './event.entity';
 import { UnlockService } from './unlock.service';
 import { EventsService } from './events.service';
+import { AccessTokenEntity } from '../auth/access-token.entity';
 
 @Module({
   controllers: [EventsController],
-  imports: [TypeOrmModule.forFeature([EventEntity])],
+  imports: [TypeOrmModule.forFeature([EventEntity, AccessTokenEntity])],
   exports: [TypeOrmModule],
   providers: [
     JwtService,

@@ -18,40 +18,35 @@ export const Navbar = () => {
   const pathname = usePathname();
 
   const { checkConnection } = useWeb3();
-  const { refreshAccessToken } = useAuth();
+  const { refreshAccessToken, handleLogout } = useAuth();
+  const handleSuccessfulConnection = async ({ accounts, ethBalance }) => {
+    await refreshAccessToken(accounts[0]);
+    updateUserDetails({
+      account: accounts[0],
+      userAccounts: accounts,
+      ethBalance,
+      isConnected: true,
+    });
+  };
+
+  const handleFailedConnection = async () => {
+    logout();
+  };
 
   useEffect(() => {
     (async () => {
-      const isConnected = await checkConnection(
-        async ({ accounts, ethBalance }) => {
-          await refreshAccessToken(accounts[0]);
-          updateUserDetails({
-            account: accounts[0],
-            userAccounts: accounts,
-            ethBalance,
-            isConnected: true,
-          });
-        },
-      );
-      if (isConnected === false) {
-        logout();
-      }
+      await checkConnection(handleSuccessfulConnection, handleFailedConnection);
     })();
   }, []);
 
   const logout = () => {
-    axios
-      .post("/auth/logout")
-      .then((response) => {
-        updateUserDetails({
-          account: null,
-          userAccount: [],
-          ethBalance: 0,
-        });
-      })
-      .catch((e) => {
-        console.log(e);
+    handleLogout(() => {
+      updateUserDetails({
+        account: null,
+        userAccount: [],
+        ethBalance: 0,
       });
+    });
   };
   const handleSuccessfulLogin = ({
     account,

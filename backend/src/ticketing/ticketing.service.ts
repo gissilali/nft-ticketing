@@ -16,7 +16,6 @@ export class TicketingService {
     private readonly ticketsRepository: Repository<TicketEntity>,
     @InjectRepository(EventEntity)
     private readonly eventsRepository: Repository<EventEntity>,
-    private readonly unlockService: UnlockService,
   ) {}
 
   async create(eventId: number, ticket: CreateTicketDto) {

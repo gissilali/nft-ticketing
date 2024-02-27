@@ -11,6 +11,7 @@ import {
 } from '@nestjs/common';
 import { Response } from 'express';
 import { AuthService } from './auth.service';
+import { AccessToken } from '../utils';
 
 @Controller('auth')
 export class AuthController {
@@ -54,7 +55,10 @@ export class AuthController {
   }
 
   @Post('/logout')
-  async logout(@Res() response: Response) {
+  async logout(@Res() response: Response, @AccessToken() accessToken: string) {
+    await this.authService.revokeToken({
+      accessToken,
+    });
     response.clearCookie('accessToken', {
       maxAge: 24 * 60 * 60 * 1000,
       httpOnly: true,

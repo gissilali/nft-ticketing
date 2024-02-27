@@ -51,6 +51,26 @@ export const useAuth = (handleSuccessfulLogin) => {
     handleSuccessfulLogin(userData);
   };
 
+  const handleLogout = async (handleSuccessfulLogout) => {
+    axios
+      .post(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/logout`,
+        {},
+        {
+          withCredentials: true,
+        },
+      )
+      .then((response) => {
+        handleSuccessfulLogout({
+          account: null,
+          userAccount: [],
+          ethBalance: 0,
+        });
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
   const refreshAccessToken = async (address) => {
     const messageToBeSigned = await fetchMessageToBeSigned(address);
 
@@ -62,5 +82,6 @@ export const useAuth = (handleSuccessfulLogin) => {
   return {
     handleLogin,
     refreshAccessToken,
+    handleLogout,
   };
 };

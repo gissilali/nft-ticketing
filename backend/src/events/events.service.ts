@@ -10,7 +10,6 @@ export class EventsService {
   constructor(
     @InjectRepository(EventEntity)
     private readonly eventsRepository: Repository<EventEntity>,
-    private readonly unlockService: UnlockService,
   ) {}
 
   findAll(): Promise<EventEntity[]> {
@@ -22,8 +21,6 @@ export class EventsService {
   }
 
   async create(event: CreateEventDto) {
-    // const lock = await this.unlockService.createEventLock(event);
-    // event.lockAddress = lock.address;
     return this.eventsRepository.save(event);
   }
 }

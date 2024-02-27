@@ -14,6 +14,7 @@ import { EventEntity } from './events/event.entity';
 import { TicketingModule } from './ticketing/ticketing.module';
 import { TicketEntity } from './ticketing/ticket.entity';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { AccessTokenEntity } from './auth/access-token.entity';
 
 @Module({
   imports: [
@@ -46,7 +47,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
         username: configService.get('DB_USERNAME'),
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_DATABASE'),
-        entities: [EventEntity, TicketEntity],
+        entities: [EventEntity, TicketEntity, AccessTokenEntity],
         synchronize: true,
         migrations: ['dist/migrations/*.js'],
       }),

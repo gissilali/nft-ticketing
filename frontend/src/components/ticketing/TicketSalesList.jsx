@@ -46,7 +46,6 @@ export const TicketSalesList = () => {
               <TableHead>Date</TableHead>
               <TableHead>Status</TableHead>
               <TableHead className="text-right">Amount</TableHead>
-              <TableHead className="text-right">Commission Deducted</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -56,29 +55,18 @@ export const TicketSalesList = () => {
                   <TableCell className="font-medium">
                     <a
                       title={ticket.transactionHash}
-                      className="w-24 truncate hover:underline block"
+                      className="hover:underline block"
                       href={`https://sepolia.etherscan.io/tx/${ticket.transactionHash}`}
                       target="_blank"
                     >
-                      {ticket.transactionHash}
+                      {ticket.transactionHash.substring(0, 15)}...
+                      {ticket.transactionHash.slice(-4)}
                     </a>
                   </TableCell>
                   <TableCell>{ticket.createdAt}</TableCell>
                   <TableCell>Paid</TableCell>
                   <TableCell className="text-right">
                     {ticket.ticketPrice} ETH
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <div className={"flex flex-col"}>
-                      <span>{ticket.commissionDeducted} ETH</span>
-                      <a
-                        className="truncate float-right underline block text-xs"
-                        href={`https://sepolia.etherscan.io/tx/${ticket.commissionTransactionHash}`}
-                        target="_blank"
-                      >
-                        View TX
-                      </a>
-                    </div>
                   </TableCell>
                 </TableRow>
               );
