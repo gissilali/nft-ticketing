@@ -8,7 +8,7 @@ WORKDIR /app
 ENV NODE_ENV development
 
 COPY --chown=node:node . .
-COPY --chown=node:node .env.example /app/.env
+RUN echo $(ls -1 .)
 
 
 RUN yarn install --frozen-lockfile
