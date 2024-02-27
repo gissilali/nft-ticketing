@@ -14,7 +14,6 @@ LogoIpsum uses [Next.js](https://nextjs.org/) for the frontend and [NestJS](http
 - Install MetaMask from [here](https://metamask.io/download/)
 - Install Docker and Docker Compose, from [here](https://docs.docker.com/engine/install/) and [here](https://docs.docker.com/compose/install/) respectively
 - Clone the repository `git clone https://github.com/gissilali/nft-ticketing.git`
-- create 
 - `cd` into the project directory root and run `docker compose up --build` to run the application, this starts the development servers for both the frontend and backend services.
 - Go to http://localhost:5000/ to open the web application on the browser.
 
