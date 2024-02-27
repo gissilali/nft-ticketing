@@ -10,6 +10,7 @@ import { Logo } from "@/components/shared/Logo";
 import { AddEventButton } from "@/components/events/AddEventButton";
 import axios from "axios";
 import { usePathname } from "next/navigation";
+import { useAuth } from "@/hooks/useAuth";
 
 export const Navbar = () => {
   const { updateUserDetails, isConnected, ethBalance, account } =
@@ -17,17 +18,21 @@ export const Navbar = () => {
   const pathname = usePathname();
 
   const { checkConnection } = useWeb3();
+  const { refreshAccessToken } = useAuth();
 
   useEffect(() => {
     (async () => {
-      const isConnected = await checkConnection(({ accounts, ethBalance }) => {
-        updateUserDetails({
-          account: accounts[0],
-          userAccounts: accounts,
-          ethBalance,
-          isConnected: true,
-        });
-      });
+      const isConnected = await checkConnection(
+        async ({ accounts, ethBalance }) => {
+          await refreshAccessToken(accounts[0]);
+          updateUserDetails({
+            account: accounts[0],
+            userAccounts: accounts,
+            ethBalance,
+            isConnected: true,
+          });
+        },
+      );
       if (isConnected === false) {
         logout();
       }

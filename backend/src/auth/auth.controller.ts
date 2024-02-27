@@ -36,8 +36,6 @@ export class AuthController {
       signature,
     );
 
-    console.log({ accessToken });
-
     if (error) {
       throw new HttpException(error, HttpStatus.UNAUTHORIZED);
     }

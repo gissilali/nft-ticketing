@@ -23,7 +23,6 @@ import useAxios from "@/hooks/useAxios";
 import { LoadingSpinner } from "@/components/shared/LoadingSpinner";
 import { useRouter } from "next/navigation";
 import { useWeb3 } from "@/hooks/useWeb3";
-import useAuthStore from "@/store/auth.store";
 
 export const EventCard = ({ event }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -50,23 +49,26 @@ export const EventCard = ({ event }) => {
   const attemptTicketPurchase = async () => {
     setIsProcessingTicket(true);
     const { value, error } = await purchaseLock(event.lockAddress);
-    axios
-      .post(`/orders/${event.id}/tickets`, {
-        transactionHash: value.receipt.hash,
-        ticketPrice: value.amount,
-        attendeeAddress: value.receipt.from,
-      })
-      .then(({ data }) => {
-        console.log(data);
-        router.push("/tickets");
-      })
-      .catch((e) => {
-        console.log(e);
-        alert("Ticket purchase failed, try again later");
-      })
-      .finally(() => {
-        setIsProcessingTicket(false);
-      });
+    if (!error) {
+      axios
+        .post(`/orders/${event.id}/tickets`, {
+          transactionHash: value.receipt.hash,
+          ticketPrice: value.amount,
+          attendeeAddress: value.receipt.from,
+        })
+        .then(({ data }) => {
+          console.log(data);
+          router.push("/tickets");
+        })
+        .catch((e) => {
+          console.log(e);
+          alert("Ticket purchase failed, try again later");
+        })
+        .finally(() => {
+          setIsProcessingTicket(false);
+        });
+    }
+    setIsProcessingTicket(false);
   };
 
   return (

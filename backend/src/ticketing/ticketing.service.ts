@@ -30,7 +30,7 @@ export class TicketingService {
 
     return await this.ticketsRepository.save({
       eventId: event.id,
-      attendeeAddress: ticket.attendeeAddress,
+      attendeeAddress: ticket.attendeeAddress.toLowerCase(),
       ticketPrice: ticket.ticketPrice,
       transactionHash: ticket.transactionHash,
       organizer: event.organizer,
@@ -47,7 +47,6 @@ export class TicketingService {
       },
     };
     defaultOption = { ...defaultOption, ...options };
-    console.log(defaultOption);
     return await this.ticketsRepository.find(defaultOption);
   }
 

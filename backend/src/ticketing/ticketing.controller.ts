@@ -49,7 +49,7 @@ export class TicketingController {
     @WalletAddress() walletAddress: string,
     @Param('attendeeAddress') attendeeAddress: string,
   ) {
-    if (walletAddress !== attendeeAddress) {
+    if (walletAddress.toLowerCase() !== attendeeAddress.toLowerCase()) {
       throw new HttpException(
         'Not authorized to get these tickets',
         HttpStatus.UNAUTHORIZED,
@@ -59,7 +59,7 @@ export class TicketingController {
     try {
       return await this.ticketingService.findAll({
         where: {
-          attendeeAddress,
+          attendeeAddress: attendeeAddress.toLowerCase(),
         },
       });
     } catch (e) {
@@ -83,12 +83,10 @@ export class TicketingController {
     @Body() createTicketDto: CreateTicketDto,
   ) {
     try {
-      const ticket = await this.ticketingService.create(
+      return await this.ticketingService.create(
         Number(eventId),
         createTicketDto,
       );
-      this.eventEmitter.emit('ticket.purchased', ticket);
-      return ticket;
     } catch (e: any) {
       console.log(e);
       throw new HttpException(

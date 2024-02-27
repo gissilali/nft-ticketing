@@ -87,23 +87,32 @@ export const useWeb3 = () => {
     let str = "Hello, World!";
     let encoder = new TextEncoder();
     let bytes = encoder.encode(str);
+    const referrerAddress = process.env.NEXT_PUBLIC_MOBIFI_WALLET_ADDRESS;
+    console.log({ referrerAddress });
+    console.log();
     const purchaseParams = [
       [amount],
       [signer.address],
-      [signer.address],
+      [referrerAddress],
       [ethers.ZeroAddress],
       [bytes],
     ];
 
     const options = {
       value: amount,
-      gasLimit: 500000,
+      gasLimit: 900000,
     };
-    const transaction = await publicLockContract.purchase(
-      ...purchaseParams,
-      options,
-    );
+
     try {
+      const referrerFees =
+        await publicLockContract.referrerFees(referrerAddress);
+
+      console.log({ referrerFees });
+
+      const transaction = await publicLockContract.purchase(
+        ...purchaseParams,
+        options,
+      );
       const receipt = await transaction.wait();
 
       return {
@@ -114,6 +123,7 @@ export const useWeb3 = () => {
         error: null,
       };
     } catch (e) {
+      console.log(e);
       return {
         value: null,
         error: e,
@@ -155,8 +165,19 @@ export const useWeb3 = () => {
     );
 
     const receipt = await transaction.wait();
+    const lock = receipt.logs[0];
+    const publicLockContract = new Contract(
+      lock.address,
+      PublicLockV12.abi,
+      signer,
+    );
 
-    return receipt.logs[0];
+    await publicLockContract.setReferrerFee(
+      process.env.NEXT_PUBLIC_MOBIFI_WALLET_ADDRESS,
+      1000,
+    );
+
+    return lock;
   };
 
   return {
