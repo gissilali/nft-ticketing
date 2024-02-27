@@ -174,7 +174,7 @@ export const useWeb3 = () => {
 
     await publicLockContract.setReferrerFee(
       process.env.NEXT_PUBLIC_MOBIFI_WALLET_ADDRESS,
-      (Number(ethers.parseEther(event.ticketPrice.toString())) * 5) / 100,
+      1500,
     );
 
     if (event.maxTickets >= event.maxTicketsPerAccount) {
