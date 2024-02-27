@@ -34,7 +34,6 @@ export const Navbar = () => {
 
   useEffect(() => {
     (async () => {
-      alert("Hello")
       await checkConnection(handleSuccessfulConnection, handleFailedConnection);
     })();
   }, []);
