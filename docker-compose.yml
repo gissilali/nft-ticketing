@@ -11,13 +11,19 @@ services:
     volumes:
       - ./frontend:/app
       - /app/node_modules
+    depends_on:
+      - backend
     networks:
       - sail
+    command: npm run dev
+
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
     container_name: mobifi_backend
+    depends_on:
+      - db
     ports:
       - '3000:3000'
     volumes:
@@ -25,6 +31,7 @@ services:
       - /app/node_modules
     networks:
       - sail
+    command: npm run start:dev
   db:
     image: postgres
     container_name: mobifi_db
