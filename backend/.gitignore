@@ -61,4 +61,10 @@ node_modules
 
 # solidity-coverage files
 /coverage.json
+# dotenv environment variable files
+.env
+.env.development.local
+.env.test.local
+.env.production.local
+.env.local
 
