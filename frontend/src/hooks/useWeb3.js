@@ -90,15 +90,11 @@ export const useWeb3 = () => {
 
     const amount = await publicLockContract.keyPrice();
 
-    console.log({ amount: amount });
-
-    console.log({ address: signer.address });
-    let str = "Hello, World!";
+    let str = "signed";
     let encoder = new TextEncoder();
     let bytes = encoder.encode(str);
     const referrerAddress = process.env.NEXT_PUBLIC_MOBIFI_WALLET_ADDRESS;
     console.log({ referrerAddress });
-    console.log();
     const purchaseParams = [
       [amount],
       [signer.address],
