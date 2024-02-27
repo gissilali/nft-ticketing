@@ -8,7 +8,6 @@ import { useWeb3 } from "@/hooks/useWeb3";
 import { useEffect } from "react";
 import { Logo } from "@/components/shared/Logo";
 import { AddEventButton } from "@/components/events/AddEventButton";
-import axios from "axios";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -35,6 +34,7 @@ export const Navbar = () => {
 
   useEffect(() => {
     (async () => {
+      alert("Hello")
       await checkConnection(handleSuccessfulConnection, handleFailedConnection);
     })();
   }, []);

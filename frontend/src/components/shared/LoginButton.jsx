@@ -1,8 +1,6 @@
 "use client";
 
 import { MetaMaskLogo } from "@/components/shared/MetaMaskLogo";
-import { useWeb3 } from "@/hooks/useWeb3";
-import axios from "axios";
 import { useAuth } from "@/hooks/useAuth";
 
 export const LoginButton = ({ onSuccessfulLogin: handleSuccessfulLogin }) => {

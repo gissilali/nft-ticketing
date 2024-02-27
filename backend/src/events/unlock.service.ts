@@ -15,7 +15,7 @@ export class UnlockService {
   async getLockByAddress(address: string) {
     const provider = this.getProvider();
     const wallet = new ethers.Wallet(this.config.get('PRIVATE_KEY'), provider);
-
+console.log({nyanye: this.config.get('PRIVATE_KEY')})
     const signer = wallet.connect(provider);
     const contract = new ethers.Contract(address, PublicLockV12.abi, signer);
     const keyPrice = ethers.utils.formatEther(await contract.keyPrice());
@@ -31,21 +31,6 @@ export class UnlockService {
       owner,
       expirationDuration: parseInt(expirationDuration._hex),
       numberOfOwners: parseInt(numberOfOwners._hex),
-    };
-  }
-
-  async sendEth(amountInEther: string, receiverAddress: string) {
-    const provider = this.getProvider();
-    const wallet = new ethers.Wallet(this.config.get('PRIVATE_KEY'), provider);
-
-    const transactionResponse = await wallet.sendTransaction({
-      to: receiverAddress,
-      value: ethers.utils.parseEther(amountInEther),
-    });
-
-    return {
-      details: transactionResponse,
-      amount: amountInEther,
     };
   }
 }
