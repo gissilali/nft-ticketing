@@ -25,7 +25,7 @@ LogoIpsum uses [Next.js](https://nextjs.org/) for the frontend and [NestJS](http
 
 `NEXT_PUBLIC_UP_SEPOLIA_ADDRESS` - the address for the unlock protocol smart contract on the Sepolia Testnet
 
-`NEXT_PUBLIC_MOBIFI_WALLET_ADDRESS` - the wallet address getting a portion from the key/ticket purchases
+`NEXT_PUBLIC_MOBIFI_WALLET_ADDRESS` - the wallet address receiving a portion of currency from the key/ticket purchases
 
 `UNLOCK_PROTOCOL_SEPOLIA_ADDRESS` - the address for the unlock protocol smart contract on the Sepolia Testnet
 
