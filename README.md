@@ -20,6 +20,19 @@ LogoIpsum uses [Next.js](https://nextjs.org/) for the frontend and [NestJS](http
 - From the root directory of the project run `docker compose up --build`, this starts the development servers for both the frontend and backend services.
 - Go to http://localhost:5000/ to open the web application on the browser.
 
+## ENV variables
+`NEXT_PUBLIC_API_BASE_URL` - REST api base url, points to the backend service
+
+`NEXT_PUBLIC_UP_SEPOLIA_ADDRESS` - the address for the unlock protocol smart contract on the Sepolia Testnet
+
+`NEXT_PUBLIC_MOBIFI_WALLET_ADDRESS` - the wallet address getting a portion from the key/ticket purchases
+
+`UNLOCK_PROTOCOL_SEPOLIA_ADDRESS` - the address for the unlock protocol smart contract on the Sepolia Testnet
+
+`PRIVATE_KEY` - private key from your wallet this is needed in the `getLockByAddress` method in `UnlockService` to fetch lock/event details on the backend service
+
+`SEPOLIA_TESTNET_URL` - The Sepolia RPC endpoint, this is needed in the `getLockByAddress` method in `UnlockService` to fetch lock/event details on the backend service
+
 ## Troubleshooting
 - If the login button is unresponsive when clicked, please try reloading the page. This issue is caused by a bug in Next.js that occurs in development mode.
 - Make sure the `SEPOLIA_TESTNET_URL` and `PRIVATE_KEY` values are defined
@@ -38,4 +51,3 @@ The wallet address is defined on the frontend `.env.local` variable `NEXT_PUBLIC
 ## The Backend
 
 It is mostly CRUD functionality to store events and tickets, after key purchases.
-
