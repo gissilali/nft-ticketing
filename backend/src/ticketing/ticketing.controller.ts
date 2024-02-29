@@ -11,15 +11,11 @@ import {
 import { TicketingService } from './ticketing.service';
 import { AuthGuard } from '../auth/auth.guard';
 import { WalletAddress } from '../utils';
-import { EventEmitter2 as EventEmitter } from '@nestjs/event-emitter';
 import { CreateTicketDto } from './ticket.dto';
 
 @Controller('orders')
 export class TicketingController {
-  constructor(
-    private readonly ticketingService: TicketingService,
-    private readonly eventEmitter: EventEmitter,
-  ) {}
+  constructor(private readonly ticketingService: TicketingService) {}
   @Get('/')
   @UseGuards(AuthGuard)
   async getTickets(@WalletAddress() address: string) {

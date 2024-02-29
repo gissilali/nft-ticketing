@@ -24,4 +24,14 @@ LogoIpsum uses [Next.js](https://nextjs.org/) for the frontend and [NestJS](http
 - If the login button is unresponsive when clicked, please try reloading the page. This issue is caused by a bug in Next.js that occurs in development mode.
 - Make sure the `SEPOLIA_TESTNET_URL` and `PRIVATE_KEY` values are defined
 
+## How commissions work
+
+The Unlock protocol has an option to set a referrer when purchasing a ticket, a referrer is the wallet address that gets a specified part of the income for every ticket sale, this is done via an internal transaction, `setReferrerFee` sets the fee and while the `purchase` function has the option to define a referrer wallet address.
+
+References
+- [referrer and setReferrerFee](https://docs.unlock-protocol.com/core-protocol/public-lock/#referrerfees-and-setreferrerfee)
+- [purchase](https://docs.unlock-protocol.com/core-protocol/public-lock/#referrerfees-and-setreferrerfee)
+
+The wallet address is defined on the frontend `.env.local` variable `NEXT_PUBLIC_MOBIFI_WALLET_ADDRESS`
+
 

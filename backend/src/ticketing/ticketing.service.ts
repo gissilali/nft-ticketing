@@ -1,10 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { TicketEntity, TransactionDetails } from './ticket.entity';
+import { TicketEntity } from './ticket.entity';
 import { Repository } from 'typeorm';
 import { EventEntity } from '../events/event.entity';
-import { UnlockService } from '../events/unlock.service';
-import { ethers } from 'ethers';
 import { FindManyOptions } from 'typeorm/find-options/FindManyOptions';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 import { CreateTicketDto } from './ticket.dto';
@@ -24,8 +22,6 @@ export class TicketingService {
         id: eventId,
       },
     });
-
-    // const receipt = await this.unlockService.purchaseKey(event.lockAddress);
 
     return await this.ticketsRepository.save({
       eventId: event.id,

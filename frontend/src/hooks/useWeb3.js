@@ -104,18 +104,16 @@ export const useWeb3 = () => {
       signer,
     );
 
-    console.log({ signer });
-
     const amount = await publicLockContract.keyPrice();
 
     let str = "signed";
     let encoder = new TextEncoder();
     let bytes = encoder.encode(str);
-    const referrerAddress = process.env.NEXT_PUBLIC_MOBIFI_WALLET_ADDRESS; // referrer receives some proceeds off every ticket sale
+    const referrerAddress = process.env.NEXT_PUBLIC_MOBIFI_WALLET_ADDRESS; // referrer receives a specified amount off of every NFT purchase
     const purchaseParams = [
       [amount],
       [signer.address],
-      [referrerAddress],
+      [referrerAddress], // referrer receives a specified amount off of every NFT purchase
       [ethers.ZeroAddress],
       [bytes], //here's where you put arbitrary data just make sure the length of this param should match the length of other params
     ];
