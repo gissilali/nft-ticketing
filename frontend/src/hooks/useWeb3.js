@@ -109,11 +109,11 @@ export const useWeb3 = () => {
     let str = "signed";
     let encoder = new TextEncoder();
     let bytes = encoder.encode(str);
-    const referrerAddress = process.env.NEXT_PUBLIC_MOBIFI_WALLET_ADDRESS; // referrer receives a specified amount off of every NFT purchase
+    const referrerAddress = process.env.NEXT_PUBLIC_MOBIFI_WALLET_ADDRESS; // referrer receives a specified amount off of every key purchase
     const purchaseParams = [
       [amount],
       [signer.address],
-      [referrerAddress], // referrer receives a specified amount off of every NFT purchase
+      [referrerAddress], // referrer receives a specified amount off of every key purchase
       [ethers.ZeroAddress],
       [bytes], //here's where you put arbitrary data just make sure the length of this param should match the length of other params
     ];
