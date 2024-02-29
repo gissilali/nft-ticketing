@@ -95,7 +95,7 @@ export const useWeb3 = () => {
     return accounts.length > 0;
   };
 
-  const purchaseLock = async (lockAddress) => {
+  const purchaseKey = async (lockAddress) => {
     const provider = new BrowserProvider(currentProvider);
     const signer = await provider.getSigner();
     const publicLockContract = new Contract(
@@ -212,7 +212,7 @@ export const useWeb3 = () => {
     requestAccount,
     signMessage,
     checkConnection,
-    purchaseLock,
+    purchaseKey: purchaseKey,
     createLock,
   };
 };

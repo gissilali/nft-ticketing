@@ -23,6 +23,7 @@ LogoIpsum uses [Next.js](https://nextjs.org/) for the frontend and [NestJS](http
 ## Troubleshooting
 - If the login button is unresponsive when clicked, please try reloading the page. This issue is caused by a bug in Next.js that occurs in development mode.
 - Make sure the `SEPOLIA_TESTNET_URL` and `PRIVATE_KEY` values are defined
+- To resolving **EACCES** permissions errors delete `frontend/.next` and `backend/dist` directories and run `docker compose up` again.
 
 ## How commissions work
 
@@ -34,4 +35,7 @@ References
 
 The wallet address is defined on the frontend `.env.local` variable `NEXT_PUBLIC_MOBIFI_WALLET_ADDRESS`
 
+## The Backend
+
+It is mostly CRUD functionality to store events and tickets, after key purchases.
 

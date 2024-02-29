@@ -33,12 +33,14 @@ export const Navbar = () => {
   };
 
   useEffect(() => {
-    (async () => {
-      await checkConnection(handleSuccessfulConnection, handleFailedConnection);
-    })();
+    // check for connection status on each page load and handle success or failure gracefully
+    // this functions also sets up the "accountsChanged" event,
+    // that way we can respond to account changes and logging out of metamask
+    checkConnection(handleSuccessfulConnection, handleFailedConnection);
   }, []);
 
   const logout = () => {
+    // logs out the user by invalidating their token and resetting the user details in the Zustand store.
     handleLogout(() => {
       updateUserDetails({
         account: null,

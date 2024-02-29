@@ -53,7 +53,11 @@ export const AddEventForm = ({ onSuccessfulSubmission }) => {
     values.maxTickets = isUnlimited ? -1 : Number(values.maxTickets);
     values.startDate = values.eventDuration?.from;
     values.endDate = values.eventDuration?.to;
+
+    // we create a lock on unlock protocol by passing event details and the wallet address of the current user
     const lock = await createLock(values, account);
+
+    //on successful lock creation we send the event details to the backend to be stored in a database
     values.lockAddress = lock.address;
     axios
       .post("/events", values)

@@ -28,7 +28,7 @@ export const EventCard = ({ event }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [contract, setContractDetails] = useState(null);
   const [isProcessingTicket, setIsProcessingTicket] = useState(false);
-  const { purchaseLock } = useWeb3();
+  const { purchaseKey } = useWeb3();
   const { axios } = useAxios();
   const router = useRouter();
 
@@ -36,6 +36,8 @@ export const EventCard = ({ event }) => {
     fetchContractDetails();
   }, []);
   const fetchContractDetails = () => {
+    //Fetching contract details by the lock address from unlock-protocol
+    // this is to make sure we are getting the most accurate price and number of keys left.
     axios
       .get(`/events/${event.lockAddress}/contract`)
       .then(({ data }) => {
@@ -48,7 +50,9 @@ export const EventCard = ({ event }) => {
 
   const attemptTicketPurchase = async () => {
     setIsProcessingTicket(true);
-    const { value, error } = await purchaseLock(event.lockAddress);
+    // A key purchase is made by passing the lock address,
+    // on successful purchase we send the details to the backend to be stored in a database
+    const { value, error } = await purchaseKey(event.lockAddress);
     if (!error) {
       axios
         .post(`/orders/${event.id}/tickets`, {
@@ -67,6 +71,8 @@ export const EventCard = ({ event }) => {
         .finally(() => {
           setIsProcessingTicket(false);
         });
+    } else {
+      alert("Ticket purchase failed, try again later");
     }
     setIsProcessingTicket(false);
   };
